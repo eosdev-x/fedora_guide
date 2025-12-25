@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What to Do After Installing Fedora 43</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #151b3d;
+            --bg-tertiary: #1e2749;
+            --accent-blue: #51a8ff;
+            --accent-purple: #a855f7;
+            --accent-cyan: #06b6d4;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --code-bg: #0f1629;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(81, 168, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 4rem 0 3rem;
+            text-align: center;
+            position: relative;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            animation: rotate3d 3s ease-in-out infinite;
+        }
+
+        @keyframes rotate3d {
+            0%, 100% { transform: perspective(400px) rotateY(0deg); }
+            50% { transform: perspective(400px) rotateY(10deg); }
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-cyan));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: gradientShift 5s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main content */
+        main {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section cards */
+        .section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(81, 168, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-blue), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover::before {
+            opacity: 1;
+        }
+
+        .section:hover {
+            transform: translateX(4px);
+            border-color: rgba(81, 168, 255, 0.3);
+        }
+
+        h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--accent-cyan);
+            margin: 2rem 0 1rem;
+            font-weight: 700;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--bg-tertiary);
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .code-label {
+            color: var(--accent-cyan);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+        }
+
+        /* Info boxes */
+        .info-box {
+            background: rgba(6, 182, 212, 0.1);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .info-box h4 {
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        /* Config list */
+        .config-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .config-list li {
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.8rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-purple);
+            transition: all 0.2s ease;
+        }
+
+        .config-list li:hover {
+            background: rgba(168, 85, 247, 0.1);
+            transform: translateX(4px);
+        }
+
+        .config-key {
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        .config-value {
+            color: var(--success);
+        }
+
+        /* Highlight boxes */
+        .highlight {
+            background: linear-gradient(135deg, rgba(81, 168, 255, 0.1), rgba(168, 85, 247, 0.1));
+            border: 1px solid rgba(81, 168, 255, 0.2);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .highlight strong {
+            color: var(--accent-blue);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            animation: fadeIn 0.8s ease 0.4s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-cyan));
+            z-index: 1000;
+            transform-origin: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">F</div>
+            </div>
+            <h1>What to Do After Installing Fedora 43</h1>
+            <p class="subtitle">Optimize your fresh Fedora installation with these essential configurations</p>
+        </header>
+
+        <main>
+            <!-- Section 1: DNF Configuration -->
+            <section class="section">
+                <h2><span class="section-number">1</span> Optimize DNF Performance</h2>
+                <p>The first thing you should do on a fresh Fedora install is optimize DNF (Dandified YUM) - Fedora's package manager. This will make all future package installations significantly faster and more efficient.</p>
+
+                <h3>Edit Your DNF Configuration</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal Command</span>
+                    </div>
+                    <pre><code>sudo nano /etc/dnf/dnf.conf</code></pre>
+                </div>
+
+                <h3>The Optimal Configuration</h3>
+                <p>Replace or update your dnf.conf with these settings:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">/etc/dnf/dnf.conf</span>
+                    </div>
+                    <pre><code>[main]
+gpgcheck=1
+installonly_limit=3
+clean_requirements_on_remove=True
+best=True
+skip_if_unavailable=False
+
+# Performance improvements
+max_parallel_downloads=10
+fastestmirror=True
+deltarpm=True
+
+# Keep system cleaner
+keepcache=False
+
+# Better dependency resolution
+install_weak_deps=True</code></pre>
+                </div>
+
+                <h3>Understanding Each Setting</h3>
+                <ul class="config-list">
+                    <li>
+                        <code class="config-key">gpgcheck=1</code> - Enables GPG signature verification for security. This verifies that packages are authentic and haven't been tampered with. <strong>Never disable this.</strong>
+                    </li>
+                    <li>
+                        <code class="config-key">installonly_limit=3</code> - Keeps only the last 3 kernels installed. Prevents your /boot partition from filling up with old kernels while keeping enough for troubleshooting.
+                    </li>
+                    <li>
+                        <code class="config-key">clean_requirements_on_remove=True</code> - Automatically removes unused dependencies when you uninstall packages. Essential for preventing bloat and keeping your system clean.
+                    </li>
+                    <li>
+                        <code class="config-key">best=True</code> - Always installs the latest/best available version of packages. Ensures you're getting the newest software and will upgrade dependencies if needed.
+                    </li>
+                    <li>
+                        <code class="config-key">max_parallel_downloads=10</code> - Downloads 10 packages simultaneously instead of one at a time. <strong>Dramatically speeds up installations.</strong>
+                    </li>
+                    <li>
+                        <code class="config-key">fastestmirror=True</code> - Automatically selects the fastest mirrors for downloads. Optimizes download speeds based on your location.
+                    </li>
+                    <li>
+                        <code class="config-key">deltarpm=True</code> - Downloads only package changes, not full packages. Saves significant bandwidth on updates.
+                    </li>
+                    <li>
+                        <code class="config-key">keepcache=False</code> - Automatically cleans package cache after installation. Saves disk space by removing downloaded packages after they're installed.
+                    </li>
+                    <li>
+                        <code class="config-key">install_weak_deps=True</code> - Installs recommended packages alongside main packages. Provides a better out-of-box experience.
+                    </li>
+                </ul>
+
+                <div class="highlight">
+                    <strong>⚡ Performance Impact:</strong> With these settings, your package installations will be noticeably faster. The combination of parallel downloads and fastest mirror selection typically cuts installation time by 60-70%.
+                </div>
+            </section>
+
+            <!-- Section 2: Security Settings -->
+            <section class="section">
+                <h2><span class="section-number">2</span> Critical Security Settings</h2>
+                
+                <div class="info-box">
+                    <h4>🔒 GPG Check (gpgcheck=1)</h4>
+                    <p>This is your protection against compromised packages. It verifies cryptographic signatures on every package before installation. This prevents:</p>
+                    <ul style="margin-top: 0.5rem; margin-left: 1.5rem; color: var(--text-secondary);">
+                        <li>Installing packages from compromised repositories</li>
+                        <li>Man-in-the-middle attacks during downloads</li>
+                        <li>Installation of modified or malicious packages</li>
+                    </ul>
+                </div>
+
+                <p><strong style="color: var(--accent-blue);">Keep this at 1 always.</strong> Only disable for testing custom repositories you personally control.</p>
+            </section>
+
+            <!-- Section 3: System Maintenance -->
+            <section class="section">
+                <h2><span class="section-number">3</span> Automatic System Cleanup</h2>
+                
+                <h3>Why These Settings Matter</h3>
+                <p>Two settings work together to keep your Fedora installation lean:</p>
+
+                <div class="info-box">
+                    <h4>🧹 clean_requirements_on_remove=True</h4>
+                    <p>When you uninstall a package like GIMP (which might pull in 50+ image processing libraries), this setting automatically removes those 50 libraries if nothing else needs them. Without this, you'd accumulate hundreds of orphaned packages over time.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>💾 keepcache=False</h4>
+                    <p>After DNF installs packages, it can either keep the downloaded .rpm files (taking up disk space) or delete them. Since you can always re-download them if needed, keeping them is wasteful. This automatically cleans the cache after installation.</p>
+                </div>
+
+                <div class="highlight">
+                    <strong>💡 Pro Tip:</strong> These settings are especially valuable if you like to experiment with different software. Uninstalling will actually free up the disk space properly instead of leaving behind dozens of unused libraries.
+                </div>
+            </section>
+
+            <!-- Section 4: Updates -->
+            <section class="section">
+                <h2><span class="section-number">4</span> Keep Your System Updated</h2>
+                
+                <p>Now that DNF is optimized, run your first system update:</p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Update System</span>
+                    </div>
+                    <pre><code>sudo dnf upgrade --refresh</code></pre>
+                </div>
+
+                <p>This will:</p>
+                <ul class="config-list">
+                    <li>Refresh repository metadata</li>
+                    <li>Download updates using your new parallel download settings</li>
+                    <li>Install the latest versions of all packages</li>
+                    <li>Automatically clean up the cache when done</li>
+                </ul>
+
+                <div class="info-box">
+                    <h4>📅 Regular Updates</h4>
+                    <p>Make it a habit to run <code style="color: var(--accent-cyan);">sudo dnf upgrade</code> weekly. Fedora releases updates frequently, and staying current keeps your system secure and stable.</p>
+                </div>
+            </section>
+
+            <!-- Section 5: Next Steps -->
+            <section class="section">
+                <h2><span class="section-number">5</span> What's Next?</h2>
+                
+                <p>With your DNF configuration optimized, your Fedora 43 system is now ready for efficient package management. Consider these next steps:</p>
+
+                <ul class="config-list">
+                    <li><strong style="color: var(--accent-cyan);">Install RPM Fusion</strong> - Access additional software not in default repositories (media codecs, graphics drivers)</li>
+                    <li><strong style="color: var(--accent-cyan);">Enable Flatpak</strong> - Already included in Fedora, great for sandboxed applications</li>
+                    <li><strong style="color: var(--accent-cyan);">Install Essential Tools</strong> - Development tools, multimedia codecs, your preferred applications</li>
+                    <li><strong style="color: var(--accent-cyan);">Configure GNOME</strong> - Customize your desktop environment with extensions and tweaks</li>
+                </ul>
+
+                <div class="highlight">
+                    <strong>🚀 Performance Note:</strong> Every package installation from now on will benefit from your optimized DNF configuration. You'll notice the difference immediately on your first multi-package installation.
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Fedora 43 Post-Installation Guide • Optimized for Performance & Security</p>
+            <p style="margin-top: 0.5rem; opacity: 0.7;">Make your fresh install fly ⚡</p>
+        </footer>
+    </div>
+
+    <script>
+        // Scroll progress indicator
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scrollIndicator').style.width = scrolled + '%';
+        });
+
+        // Add stagger animation to sections
+        const sections = document.querySelectorAll('.section');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '0';
+                    entry.target.style.transform = 'translateY(20px)';
+                    entry.target.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                    
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+    </script>
+</body>
+</html>
