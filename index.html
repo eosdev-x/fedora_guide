@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>What to Do After Installing Fedora 43</title>
+    <title>What to Do After Installing Fedora 44</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -369,15 +369,20 @@
             <div class="logo">
                 <div class="logo-icon">F</div>
             </div>
-            <h1>What to Do After Installing Fedora 43</h1>
-            <p class="subtitle">Optimize your fresh Fedora installation with these essential configurations</p>
+            <h1>What to Do After Installing Fedora 44</h1>
+            <p class="subtitle">Optimize your fresh Fedora 44 install. DNF is DNF5 now — tune the settings that still matter.</p>
         </header>
 
         <main>
             <!-- Section 1: DNF Configuration -->
             <section class="section">
                 <h2><span class="section-number">1</span> Optimize DNF Performance</h2>
-                <p>The first thing you should do on a fresh Fedora install is optimize DNF (Dandified YUM) - Fedora's package manager. This will make all future package installations significantly faster and more efficient.</p>
+                <p>The first thing you should do on a fresh Fedora 44 install is tune DNF5, Fedora's package manager. On Fedora 44, <code>dnf</code> is DNF5 (a C++ rewrite). It is already much faster than old DNF4 — you only need a couple of config changes, not a full rewrite of <code>dnf.conf</code>.</p>
+
+                <div class="info-box">
+                    <h4>Fedora 44 ships DNF5</h4>
+                    <p><code>/usr/bin/dnf</code> is a symlink to <code>dnf5</code>. Stock <code>/etc/dnf/dnf.conf</code> is basically empty; real distro defaults live in <code>/usr/share/dnf5/libdnf.conf.d/20-fedora-defaults.conf</code> (<code>pkg_gpgcheck=True</code>, <code>skip_if_unavailable=True</code>, <code>best=False</code>). Leave those alone.</p>
+                </div>
 
                 <h3>Edit Your DNF Configuration</h3>
                 <div class="code-block">
@@ -388,63 +393,57 @@
                 </div>
 
                 <h3>The Optimal Configuration</h3>
-                <p>Replace or update your dnf.conf with these settings:</p>
+                <p>Add these two lines under <code>[main]</code>. Everything else below is already the Fedora 44 / DNF5 default.</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">/etc/dnf/dnf.conf</span>
                     </div>
                     <pre><code>[main]
-gpgcheck=1
-installonly_limit=3
-clean_requirements_on_remove=True
-best=True
-skip_if_unavailable=False
-
-# Performance improvements
+# Speed tweaks (Fedora 44 / DNF5 defaults are 3 and False)
 max_parallel_downloads=10
-fastestmirror=True
-deltarpm=True
-
-# Keep system cleaner
-keepcache=False
-
-# Better dependency resolution
-install_weak_deps=True</code></pre>
+fastestmirror=True</code></pre>
                 </div>
 
-                <h3>Understanding Each Setting</h3>
+                <h3>Add These (they change Fedora 44 defaults)</h3>
                 <ul class="config-list">
                     <li>
-                        <code class="config-key">gpgcheck=1</code> - Enables GPG signature verification for security. This verifies that packages are authentic and haven't been tampered with. <strong>Never disable this.</strong>
+                        <code class="config-key">max_parallel_downloads=10</code> - DNF5 default is 3 (max 20). Ten concurrent downloads is the useful speed win on a typical home connection.
                     </li>
                     <li>
-                        <code class="config-key">installonly_limit=3</code> - Keeps only the last 3 kernels installed. Prevents your /boot partition from filling up with old kernels while keeping enough for troubleshooting.
+                        <code class="config-key">fastestmirror=True</code> - Default is False. Uses TCP latency to pick a nearby mirror instead of metalink order. Optional, but the usual second tweak.
+                    </li>
+                </ul>
+
+                <h3>Already Default on Fedora 44 — don't fight them</h3>
+                <ul class="config-list">
+                    <li>
+                        <code class="config-key">pkg_gpgcheck=True</code> - Fedora's drop-in already enables package signature checks. DNF5 still accepts <code>gpgcheck=1</code> as a compatibility alias. <strong>Never disable this.</strong>
                     </li>
                     <li>
-                        <code class="config-key">clean_requirements_on_remove=True</code> - Automatically removes unused dependencies when you uninstall packages. Essential for preventing bloat and keeping your system clean.
+                        <code class="config-key">installonly_limit=3</code> - Already default. Keeps three kernels so <code>/boot</code> doesn't fill up.
                     </li>
                     <li>
-                        <code class="config-key">best=True</code> - Always installs the latest/best available version of packages. Ensures you're getting the newest software and will upgrade dependencies if needed.
+                        <code class="config-key">clean_requirements_on_remove=True</code> - Already default. Unused dependencies go away on <code>dnf remove</code>.
                     </li>
                     <li>
-                        <code class="config-key">max_parallel_downloads=10</code> - Downloads 10 packages simultaneously instead of one at a time. <strong>Dramatically speeds up installations.</strong>
+                        <code class="config-key">keepcache=False</code> - Already default. Downloaded RPMs are not kept forever.
                     </li>
                     <li>
-                        <code class="config-key">fastestmirror=True</code> - Automatically selects the fastest mirrors for downloads. Optimizes download speeds based on your location.
+                        <code class="config-key">install_weak_deps=True</code> - Already default. Recommends/Supplements still get pulled in.
                     </li>
                     <li>
-                        <code class="config-key">deltarpm=True</code> - Downloads only package changes, not full packages. Saves significant bandwidth on updates.
+                        <code class="config-key">best=False</code> - Fedora explicitly sets this. Do <strong>not</strong> force <code>best=True</code>; it makes upgrades fail when the newest version can't be installed.
                     </li>
                     <li>
-                        <code class="config-key">keepcache=False</code> - Automatically cleans package cache after installation. Saves disk space by removing downloaded packages after they're installed.
+                        <code class="config-key">skip_if_unavailable=True</code> - Fedora explicitly sets this so a dead third-party repo doesn't block updates. Don't set it back to False.
                     </li>
                     <li>
-                        <code class="config-key">install_weak_deps=True</code> - Installs recommended packages alongside main packages. Provides a better out-of-box experience.
+                        <code class="config-key">deltarpm</code> - Gone. DNF5 has no <code>deltarpm</code> option. Don't add it.
                     </li>
                 </ul>
 
                 <div class="highlight">
-                    <strong>⚡ Performance Impact:</strong> With these settings, your package installations will be noticeably faster. The combination of parallel downloads and fastest mirror selection typically cuts installation time by 60-70%.
+                    <strong>⚡ Performance Impact:</strong> DNF5 is already faster than DNF4. Parallel downloads (10 vs 3) plus fastestmirror is the remaining win — often a large cut in wall-clock time on multi-package installs.
                 </div>
             </section>
 
@@ -518,13 +517,13 @@ install_weak_deps=True</code></pre>
             <section class="section">
                 <h2><span class="section-number">5</span> What's Next?</h2>
                 
-                <p>With your DNF configuration optimized, your Fedora 43 system is now ready for efficient package management. Consider these next steps:</p>
+                <p>With DNF5 tuned, your Fedora 44 system is ready for efficient package management. Consider these next steps:</p>
 
                 <ul class="config-list">
                     <li><strong style="color: var(--accent-cyan);">Install RPM Fusion</strong> - Access additional software not in default repositories (media codecs, graphics drivers)</li>
                     <li><strong style="color: var(--accent-cyan);">Enable Flatpak</strong> - Already included in Fedora, great for sandboxed applications</li>
                     <li><strong style="color: var(--accent-cyan);">Install Essential Tools</strong> - Development tools, multimedia codecs, your preferred applications</li>
-                    <li><strong style="color: var(--accent-cyan);">Configure GNOME</strong> - Customize your desktop environment with extensions and tweaks</li>
+                    <li><strong style="color: var(--accent-cyan);">Desktop</strong> - Workstation ships GNOME 50; KDE Plasma Desktop Edition ships Plasma 6.6. Customize the one you installed.</li>
                 </ul>
 
                 <div class="highlight">
@@ -534,7 +533,7 @@ install_weak_deps=True</code></pre>
         </main>
 
         <footer>
-            <p>Fedora 43 Post-Installation Guide • Optimized for Performance & Security</p>
+            <p>Fedora 44 Post-Installation Guide • DNF5 • Optimized for Performance & Security</p>
             <p style="margin-top: 0.5rem; opacity: 0.7;">Make your fresh install fly ⚡</p>
         </footer>
     </div>

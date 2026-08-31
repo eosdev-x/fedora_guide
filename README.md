@@ -1,13 +1,13 @@
-# 🚀 Fedora 43 Post-Installation Guide
+# 🚀 Fedora 44 Post-Installation Guide
 
 <div align="center">
 
-![Fedora](https://img.shields.io/badge/Fedora-43-51A2DA?style=for-the-badge&logo=fedora&logoColor=white)
+![Fedora](https://img.shields.io/badge/Fedora-44-51A2DA?style=for-the-badge&logo=fedora&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-**A visually stunning, interactive guide for optimizing your fresh Fedora 43 installation**
+**A visually stunning, interactive guide for optimizing your fresh Fedora 44 installation**
 
 [View Demo](#-preview) • [Features](#-features) • [Installation](#-installation) • [Usage](#-usage)
 
@@ -17,11 +17,11 @@
 
 ## 📖 About
 
-This landing page transforms essential Fedora 43 post-installation knowledge into a beautiful, interactive web experience. Built with performance and aesthetics in mind, it guides users through critical DNF optimizations that can dramatically improve their system's package management speed and efficiency.
+This landing page transforms essential Fedora 44 post-installation knowledge into a beautiful, interactive web experience. Fedora 44's package manager is DNF5 (`dnf` → `dnf5`). The guide covers the two speed tweaks that still matter, and explains which old DNF4 settings are already default — or gone.
 
 ### Why This Guide?
 
-- **⚡ 60-70% faster package installations** through optimized DNF configuration
+- **⚡ Faster installs** by raising DNF5 parallel downloads from 3 to 10
 - **🧹 Automatic system cleanup** preventing bloat and disk space waste
 - **🔒 Enhanced security** with proper GPG verification
 - **📚 Educational** - explains *why* each setting matters, not just *what* to do
@@ -78,14 +78,14 @@ The landing page features:
 
 1. **Download the file:**
    ```bash
-   wget https://your-domain.com/fedora-guide.html
+   wget https://your-domain.com/index.html
    ```
 
 2. **Open in your browser:**
    ```bash
-   firefox fedora-guide.html
+   firefox index.html
    # or
-   google-chrome fedora-guide.html
+   google-chrome index.html
    ```
 
 ### Hosting Options
@@ -99,12 +99,12 @@ python -m http.server 8000
 npx http-server
 ```
 
-Then visit `http://localhost:8000/fedora-guide.html`
+Then visit `http://localhost:8000/`
 
 #### Deploy to GitHub Pages
 
 1. Create a new repository
-2. Upload `fedora-guide.html`
+2. Upload `index.html`
 3. Rename to `index.html`
 4. Enable GitHub Pages in repository settings
 
@@ -161,12 +161,11 @@ Sections follow a consistent structure:
 
 ## 🎯 What This Guide Covers
 
-### 1. DNF Configuration Optimization
-- Parallel downloads (10 concurrent)
+### 1. DNF5 Configuration (Fedora 44)
+- Parallel downloads (10 vs DNF5 default of 3)
 - Fastest mirror selection
-- Delta RPM for bandwidth savings
-- Automatic cache cleanup
-- Smart dependency resolution
+- What Fedora already sets (`pkg_gpgcheck`, `best=False`, `skip_if_unavailable=True`)
+- `deltarpm` removed — DNF5 does not support it
 
 ### 2. Security Best Practices
 - GPG signature verification explained
@@ -187,7 +186,7 @@ Sections follow a consistent structure:
 - RPM Fusion repository setup
 - Flatpak configuration
 - Essential tools installation
-- GNOME customization tips
+- GNOME 50 / KDE Plasma 6.6 customization
 
 ---
 
@@ -207,12 +206,12 @@ This guide follows several key design principles:
 
 Following this guide's recommendations typically results in:
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Package Download Speed | Serial | 10 parallel | **~70% faster** |
-| Update Time | ~5-10 min | ~2-3 min | **60% reduction** |
-| Disk Space (after updates) | Bloated cache | Auto-cleaned | **500MB-2GB saved** |
-| Orphaned Packages | Accumulate | Auto-removed | **Hundreds prevented** |
+| Metric | Stock Fedora 44 | After this guide | Notes |
+|--------|-----------------|------------------|-------|
+| Package downloads | 3 parallel | 10 parallel | DNF5 max is 20 |
+| Mirror pick | Metalink order | Latency-based `fastestmirror` | Optional |
+| Cache / orphans | Already cleaned | Unchanged | DNF5 defaults |
+| `deltarpm` | Not a DNF5 option | Not used | Don't add it |
 
 ---
 
